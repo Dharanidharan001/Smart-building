@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexus Glow Dashboard Clone</title>
+
+<style>
+/* ===== GLOBAL ===== */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family: "Inter", sans-serif;
+}
+
+body{
+  background: linear-gradient(135deg,#0f172a,#1e293b);
+  color:white;
+  height:100vh;
+}
+
+/* ===== LAYOUT ===== */
+.container{
+  display:grid;
+  grid-template-columns: 260px 1fr 320px;
+  gap:20px;
+  padding:20px;
+  height:100vh;
+}
+
+/* ===== GLASS EFFECT ===== */
+.glass{
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(20px);
+  border-radius:20px;
+  border:1px solid rgba(255,255,255,0.1);
+  box-shadow:0 10px 30px rgba(0,0,0,0.3);
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar{
+  padding:20px;
+}
+
+.logo{
+  font-size:20px;
+  font-weight:600;
+  margin-bottom:30px;
+}
+
+.menu-item{
+  padding:12px;
+  border-radius:10px;
+  margin-bottom:10px;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.menu-item:hover{
+  background:rgba(255,255,255,0.1);
+}
+
+/* ===== MAIN ===== */
+.main{
+  padding:20px;
+}
+
+.header{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:20px;
+}
+
+.search{
+  padding:10px;
+  border-radius:10px;
+  border:none;
+  width:200px;
+}
+
+/* GRID */
+.cards{
+  display:grid;
+  grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
+  gap:20px;
+}
+
+/* CARD */
+.card{
+  padding:20px;
+  transition:0.3s;
+  cursor:pointer;
+}
+
+.card:hover{
+  transform:translateY(-8px) scale(1.02);
+  box-shadow:0 20px 40px rgba(0,255,200,0.2);
+}
+
+/* ICON */
+.icon{
+  font-size:28px;
+  margin-bottom:10px;
+}
+
+/* TOGGLE */
+.toggle{
+  margin-top:15px;
+}
+
+.toggle input{
+  display:none;
+}
+
+.toggle label{
+  width:50px;
+  height:25px;
+  background:#444;
+  border-radius:25px;
+  display:inline-block;
+  position:relative;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.toggle label::after{
+  content:"";
+  width:22px;
+  height:22px;
+  background:white;
+  position:absolute;
+  top:1.5px;
+  left:2px;
+  border-radius:50%;
+  transition:0.3s;
+}
+
+.toggle input:checked + label{
+  background:#00ffc3;
+}
+
+.toggle input:checked + label::after{
+  left:26px;
+}
+
+/* STATUS */
+.status{
+  margin-top:10px;
+  font-weight:600;
+}
+
+.on{color:#00ffc3;}
+.off{color:#ff4d4d;}
+
+/* ===== RIGHT PANEL ===== */
+.right{
+  padding:20px;
+}
+
+.profile{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:20px;
+}
+
+.avatar{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  background:linear-gradient(45deg,#00ffc3,#3b82f6);
+}
+
+/* TIMELINE */
+.event{
+  padding:10px;
+  border-radius:10px;
+  background:rgba(255,255,255,0.05);
+  margin-bottom:10px;
+  transition:0.3s;
+}
+
+.event:hover{
+  background:rgba(0,255,200,0.1);
+}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:1000px){
+  .container{
+    grid-template-columns:1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar glass">
+    <div class="logo">⚡ Nexus</div>
+
+    <div class="menu-item">Dashboard</div>
+    <div class="menu-item">Devices</div>
+    <div class="menu-item">Analytics</div>
+    <div class="menu-item">Settings</div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main glass">
+
+    <div class="header">
+      <h2>Smart Home</h2>
+      <input class="search" placeholder="Search...">
+    </div>
+
+    <div class="cards">
+
+      <!-- DOOR -->
+      <div class="card glass">
+        <div class="icon">🚪</div>
+        <h3>Door</h3>
+
+        <div class="toggle">
+          <input type="checkbox" id="door">
+          <label for="door"></label>
+        </div>
+
+        <div class="status off" id="doorStatus">Locked</div>
+      </div>
+
+      <!-- LIGHT -->
+      <div class="card glass">
+        <div class="icon">💡</div>
+        <h3>Light</h3>
+
+        <div class="toggle">
+          <input type="checkbox" id="light">
+          <label for="light"></label>
+        </div>
+
+        <div class="status off" id="lightStatus">OFF</div>
+      </div>
+
+      <!-- FAN -->
+      <div class="card glass">
+        <div class="icon">🌀</div>
+        <h3>Fan</h3>
+
+        <div class="toggle">
+          <input type="checkbox" id="fan">
+          <label for="fan"></label>
+        </div>
+
+        <div class="status off" id="fanStatus">OFF</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right glass">
+    <div class="profile">
+      <div class="avatar"></div>
+      <div>Dharani</div>
+    </div>
+
+    <h3>Activity</h3>
+
+    <div class="event">Door Closed - 7:00 AM</div>
+    <div class="event">Light ON - 8:00 AM</div>
+    <div class="event">Fan OFF - 9:00 AM</div>
+
+  </div>
+
+</div>
+
+<script>
+// toggle logic
+function setup(id, statusId, onText, offText){
+  const el = document.getElementById(id);
+  const status = document.getElementById(statusId);
+
+  el.addEventListener("change",()=>{
+    if(el.checked){
+      status.innerText = onText;
+      status.className="status on";
+    } else {
+      status.innerText = offText;
+      status.className="status off";
+    }
+  });
+}
+
+setup("door","doorStatus","Unlocked","Locked");
+setup("light","lightStatus","ON","OFF");
+setup("fan","fanStatus","ON","OFF");
+</script>
+
+</body>
+</html>
