@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stunning Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #0f172a;
+            overflow: hidden; /* Hide scrollbars for full screen effect */
+        }
+
+        /* Floating Gradient Orbs */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            animation: float 20s infinite ease-in-out;
+            opacity: 0.6;
+        }
+
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: rgba(56, 189, 248, 0.3);
+            top: -10%;
+            left: -10%;
+        }
+
+        .orb-2 {
+            width: 500px;
+            height: 500px;
+            background: rgba(168, 85, 247, 0.3); /* Purple */
+            bottom: -20%;
+            right: -10%;
+            animation-delay: -5s;
+        }
+
+        .orb-3 {
+            width: 300px;
+            height: 300px;
+            background: rgba(236, 72, 153, 0.2); /* Pink */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+
+        /* Glassmorphism Input */
+        .glass-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .glass-input:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #38bdf8;
+            outline: none;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+        }
+
+        /* Glow Button */
+        .glow-btn {
+            position: relative;
+            background: linear-gradient(to right, #38bdf8, #818cf8);
+            border: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+        
+        .glow-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+            z-index: -1;
+        }
+        
+        .glow-btn:hover::before {
+            left: 100%;
+        }
+
+        /* Form entrance animation */
+        .animate-entrance {
+            animation: slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        @keyframes slideUpFade {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center text-slate-200">
+
+    <!-- Background Orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <!-- Login Container -->
+    <div class="w-full max-w-md p-8 rounded-3xl backdrop-blur-2xl bg-slate-900/40 border border-slate-700/50 shadow-2xl shadow-sky-900/20 animate-entrance interactive-element">
+        
+        <div class="text-center mb-10">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-tr from-sky-400 to-indigo-500 mb-6 shadow-lg shadow-sky-500/40 transform transition hover:scale-110 duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+            </div>
+            <h1 class="text-3xl font-bold tracking-tight text-white mb-2">Welcome Back</h1>
+            <p class="text-slate-400 text-sm">Please sign in to your account to continue</p>
+        </div>
+
+        <form onsubmit="handleLogin(event)" class="space-y-6">
+            <div class="space-y-2">
+                <label for="email" class="text-sm font-medium text-slate-300 ml-1">Email Address</label>
+                <div class="relative group">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-sky-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400 group-focus-within:text-sky-400 transition-colors" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                            <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                        </svg>
+                    </div>
+                    <input type="email" id="email" required placeholder="name@example.com" 
+                        class="w-full pl-11 pr-4 py-3.5 rounded-xl glass-input interactive-element text-sm">
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <div class="flex items-center justify-between ml-1">
+                    <label for="password" class="text-sm font-medium text-slate-300">Password</label>
+                    <a href="#" class="text-xs text-sky-400 hover:text-sky-300 transition-colors interactive-element font-medium">Forgot password?</a>
+                </div>
+                <div class="relative group">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-sky-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400 group-focus-within:text-sky-400 transition-colors" viewBox="0 0 20 20" fill="currentColor">
+                           <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <input type="password" id="password" required placeholder="••••••••" 
+                        class="w-full pl-11 pr-4 py-3.5 rounded-xl glass-input interactive-element tracking-widest text-sm">
+                </div>
+            </div>
+
+            <div class="flex items-center pt-2">
+                <input type="checkbox" id="remember" class="w-4 h-4 rounded border-slate-600 bg-slate-800 text-sky-500 focus:ring-sky-500 focus:ring-offset-slate-900 interactive-element">
+                <label for="remember" class="ml-2 text-sm text-slate-400 interactive-element cursor-pointer">Remember me for 30 days</label>
+            </div>
+
+            <button type="submit" class="w-full py-3.5 rounded-xl font-semibold text-white glow-btn interactive-element transform transition hover:-translate-y-1 hover:shadow-lg hover:shadow-sky-500/40 mt-6">
+                Sign In
+            </button>
+        </form>
+
+        <p class="mt-8 text-center text-sm text-slate-400">
+            Don't have an account? 
+            <a href="#" class="font-medium text-white hover:text-sky-400 transition-colors underline decoration-slate-600 underline-offset-4 interactive-element">Create one now</a>
+        </p>
+    </div>
+
+    <script>
+        // Form submission redirect
+        function handleLogin(e) {
+            e.preventDefault();
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
