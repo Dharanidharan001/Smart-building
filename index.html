@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS HOME — Intelligence Lives Here</title>
+    <title>Smart-building-management-system</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
@@ -58,7 +58,7 @@
     <div id="loader" class="fixed inset-0 z-[100] bg-white flex items-center justify-center transition-opacity duration-700">
         <div class="flex flex-col items-center">
             <div class="w-12 h-12 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
-            <p class="mt-4 font-bold tracking-widest text-sm uppercase">Nexus Home</p>
+            <p class="mt-4 font-bold tracking-widest text-sm uppercase">Smart-building-management-system</p>
         </div>
     </div>
 
@@ -68,7 +68,7 @@
             <div class="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
                 <div class="w-2 h-2 bg-cyan-400 rounded-full animate-pulse shadow-[0_0_8px_#22d3ee]"></div>
             </div>
-            <h1 class="font-extrabold text-lg tracking-tight uppercase">Nexus <span class="font-light">Home</span></h1>
+            <h1 class="font-extrabold text-lg tracking-tight uppercase">Smart</h1> <span class="font-light">Building</span></h1>
         </div>
 
         <div class="hidden md:flex items-center gap-8 text-sm font-medium">
@@ -98,16 +98,16 @@
             <button onclick="switchTab('dashboard')" class="nav-btn active-tab flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all">
                 <i data-lucide="layout-grid" class="w-5 h-5"></i> Dashboard
             </button>
-            <button onclick="switchTab('lighting')" class="nav-btn flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-500 hover:bg-slate-50 transition-all">
+            <button onclick="switchTab('lighting')" class="nav-btn flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all">
                 <i data-lucide="lightbulb" class="w-5 h-5"></i> Lighting
             </button>
-            <button onclick="switchTab('energy')" class="nav-btn flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-500 hover:bg-slate-50 transition-all">
+            <button onclick="switchTab('energy')" class="nav-btn flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all">
                 <i data-lucide="zap" class="w-5 h-5"></i> Energy
             </button>
-            <button onclick="switchTab('doors')" class="nav-btn flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-500 hover:bg-slate-50 transition-all">
+            <button onclick="switchTab('doors')" class="nav-btn flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all">
                 <i data-lucide="door-closed" class="w-5 h-5"></i> Doors
             </button>
-            <button onclick="switchTab('automation')" class="nav-btn flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-500 hover:bg-slate-50 transition-all">
+            <button onclick="switchTab('automation')" class="nav-btn flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all">
                 <i data-lucide="cpu" class="w-5 h-5"></i> Automation
             </button>
             
@@ -155,13 +155,7 @@
                         <p class="text-2xl font-bold" id="stat-power">2.4 <span class="text-sm font-medium">kW</span></p>
                         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Energy Consumption</p>
                     </div>
-                    <div class="glass-card p-5 rounded-3xl">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="p-2 bg-indigo-50 text-indigo-600 rounded-xl"><i data-lucide="thermometer" class="w-5 h-5"></i></div>
-                        </div>
-                        <p class="text-2xl font-bold" id="stat-temp">24°C</p>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Average Temp</p>
-                    </div>
+
                     <div class="glass-card p-5 rounded-3xl">
                         <div class="flex justify-between items-start mb-4">
                             <div class="p-2 bg-emerald-50 text-emerald-600 rounded-xl"><i data-lucide="lock" class="w-5 h-5"></i></div>
