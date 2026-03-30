@@ -1,832 +1,573 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Smart Building — Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-/* ── RESET ── */
-*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-
-:root {
-  --bg:       #f0f2f5;
-  --sidebar:  #ffffff;
-  --border:   #e4e6ea;
-  --card:     #ffffff;
-  --accent:   #1a1a1a;
-  --accent2:  #555555;
-  --active-bg:#111111;
-  --active-fg:#ffffff;
-  --green:    #2d7a4f;
-  --text:     #111111;
-  --muted:    #888888;
-  --sub:      #aaaaaa;
-  --shadow:   rgba(0,0,0,0.08);
-  --shadow-lg:rgba(0,0,0,0.16);
-}
-
-body {
-  font-family: 'Outfit', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  height: 100vh;
-  overflow: hidden;
-  display: flex;
-}
-
-/* ── SUBTLE DOT GRID ── */
-body::before {
-  content: '';
-  position: fixed; inset: 0;
-  background-image: radial-gradient(circle, rgba(0,0,0,0.07) 1px, transparent 1px);
-  background-size: 28px 28px;
-  z-index: 0;
-  pointer-events: none;
-}
-
-/* ── SIDEBAR ── */
-.sidebar {
-  width: 240px;
-  min-width: 240px;
-  background: var(--sidebar);
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  padding: 24px 16px;
-  position: relative;
-  z-index: 10;
-  box-shadow: 2px 0 12px var(--shadow);
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 0 8px;
-  margin-bottom: 36px;
-}
-
-.logo-icon {
-  width: 38px; height: 38px;
-  background: var(--accent);
-  border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 18px;
-  flex-shrink: 0;
-  box-shadow: 0 4px 12px var(--shadow-lg);
-}
-
-.logo-text { font-size: 18px; font-weight: 700; letter-spacing: 0.5px; color: var(--text); }
-.logo-text span { color: var(--muted); font-weight: 400; }
-
-.nav-label {
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--sub);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  padding: 0 12px;
-  margin-bottom: 8px;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 11px 14px;
-  border-radius: 12px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--muted);
-  transition: all 0.2s ease;
-  margin-bottom: 4px;
-  position: relative;
-}
-
-.nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
-
-.nav-item:hover {
-  background: var(--bg);
-  color: var(--text);
-}
-
-.nav-item.active {
-  background: var(--active-bg);
-  color: var(--active-fg);
-  box-shadow: 0 4px 14px var(--shadow-lg);
-}
-
-.nav-item.active::before {
-  content: '';
-  position: absolute;
-  left: -1px; top: 20%; bottom: 20%;
-  width: 3px;
-  background: var(--active-fg);
-  border-radius: 0 3px 3px 0;
-}
-
-.nav-badge {
-  margin-left: auto;
-  background: var(--active-bg);
-  color: var(--active-fg);
-  font-size: 10px;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 20px;
-}
-
-.nav-item.active .nav-badge {
-  background: rgba(255,255,255,0.2);
-  color: #fff;
-}
-
-.sidebar-footer {
-  margin-top: auto;
-  padding-top: 16px;
-  border-top: 1px solid var(--border);
-}
-
-.user-card {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  background: var(--bg);
-  cursor: pointer;
-  border: 1px solid var(--border);
-}
-
-.avatar {
-  width: 36px; height: 36px;
-  border-radius: 50%;
-  background: var(--accent);
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 14px; color: white;
-  flex-shrink: 0;
-}
-
-.user-info .name { font-size: 13px; font-weight: 600; color: var(--text); }
-.user-info .role { font-size: 11px; color: var(--muted); }
-
-/* ── MAIN ── */
-.main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  position: relative;
-  z-index: 5;
-}
-
-/* ── TOP BAR ── */
-.topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 18px 28px;
-  border-bottom: 1px solid var(--border);
-  background: rgba(255,255,255,0.9);
-  backdrop-filter: blur(12px);
-  flex-shrink: 0;
-}
-
-.topbar-left h1 {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.topbar-left p {
-  font-size: 12px;
-  color: var(--muted);
-  margin-top: 2px;
-}
-
-.topbar-right {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.stat-pill {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  border: 1px solid;
-}
-
-.stat-pill.online {
-  background: rgba(45,122,79,0.08);
-  border-color: rgba(45,122,79,0.25);
-  color: var(--green);
-}
-
-.stat-pill.devices {
-  background: var(--bg);
-  border-color: var(--border);
-  color: var(--accent2);
-}
-
-.pulse-dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: var(--green);
-  animation: pulse-glow 2s infinite;
-}
-
-@keyframes pulse-glow {
-  0%,100% { box-shadow: 0 0 0 0 rgba(45,122,79,0.5); }
-  50%      { box-shadow: 0 0 0 5px rgba(45,122,79,0); }
-}
-
-/* ── CONTENT AREA ── */
-.content {
-  flex: 1;
-  overflow-y: auto;
-  padding: 28px;
-  background: var(--bg);
-}
-
-.content::-webkit-scrollbar { width: 4px; }
-.content::-webkit-scrollbar-track { background: transparent; }
-.content::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.12); border-radius: 4px; }
-
-/* ── SECTION TITLE ── */
-.section-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 24px;
-}
-
-.section-header h2 {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--text);
-  white-space: nowrap;
-}
-
-.section-header .line {
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, var(--border), transparent);
-}
-
-.section-tag {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  color: var(--muted);
-  text-transform: uppercase;
-  padding: 3px 10px;
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  background: white;
-}
-
-/* ── ROOM GRID ── */
-.rooms-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 22px;
-}
-
-/* ── ROOM CARD ── */
-.room-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  overflow: hidden;
-  position: relative;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 4px 20px var(--shadow);
-}
-
-.room-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 16px 40px var(--shadow-lg);
-}
-
-/* subtle dot-grid inside card */
-.room-card::before {
-  content: '';
-  position: absolute; inset: 0;
-  background-image: radial-gradient(circle, rgba(0,0,0,0.05) 1px, transparent 1px);
-  background-size: 20px 20px;
-  pointer-events: none;
-  border-radius: 20px;
-}
-
-.room-header {
-  padding: 20px 20px 14px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid var(--border);
-  position: relative;
-}
-
-.room-id {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 3px;
-  color: var(--sub);
-  text-transform: uppercase;
-}
-
-.room-name {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text);
-  margin-top: 2px;
-}
-
-.room-icon-bg {
-  width: 44px; height: 44px;
-  border-radius: 12px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 22px;
-}
-
-/* active devices bar */
-.room-bar {
-  height: 3px;
-  background: var(--bg);
-  position: relative;
-}
-
-.room-bar-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #333, #888);
-  border-radius: 3px;
-  transition: width 0.5s ease;
-}
-
-/* ── DEVICE LIST ── */
-.devices {
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  position: relative;
-}
-
-.device-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  border-radius: 12px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  transition: all 0.25s ease;
-  cursor: default;
-}
-
-.device-row.on {
-  border-color: #999;
-  background: #f7f7f7;
-  box-shadow: 0 2px 8px var(--shadow);
-}
-
-.device-icon-wrap {
-  width: 36px; height: 36px;
-  border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 17px;
-  flex-shrink: 0;
-  transition: all 0.3s ease;
-  background: #ebebeb;
-  border: 1px solid #ddd;
-}
-
-.device-row.on .device-icon-wrap {
-  background: #e0e0e0;
-  border-color: #bbb;
-}
-
-.device-row[data-type="fan"].on .device-icon-wrap {
-  animation: spin 1.8s linear infinite;
-}
-
-@keyframes spin { to { transform: rotate(360deg); } }
-
-
-
-.device-info { flex: 1; }
-.device-name  { font-size: 13px; font-weight: 600; color: var(--text); }
-.device-state { font-size: 11px; color: var(--muted); margin-top: 1px; transition: color 0.3s; }
-
-.device-row.on .device-state { color: var(--text); font-weight: 600; }
-
-/* ── TOGGLE SWITCH ── */
-.toggle-wrap { flex-shrink: 0; }
-
-.toggle-sw {
-  position: relative;
-  width: 42px; height: 22px;
-  display: inline-block;
-}
-
-.toggle-sw input { display: none; }
-
-.slider {
-  position: absolute; inset: 0;
-  background: #ddd;
-  border-radius: 22px;
-  cursor: pointer;
-  transition: background 0.3s;
-  border: 1px solid #ccc;
-}
-
-.slider::after {
-  content: '';
-  position: absolute;
-  width: 16px; height: 16px;
-  background: white;
-  border-radius: 50%;
-  top: 2px; left: 2px;
-  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
-  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
-}
-
-.toggle-sw input:checked + .slider { background: var(--accent); border-color: var(--accent); }
-.toggle-sw input:checked + .slider::after { transform: translateX(20px); }
-
-/* ── ROOM FOOTER ── */
-.room-footer {
-  padding: 10px 20px 14px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: relative;
-}
-
-.active-count {
-  font-size: 11px;
-  color: var(--muted);
-}
-
-.active-count span {
-  color: var(--text);
-  font-weight: 700;
-}
-
-.room-status-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--green);
-  box-shadow: 0 0 6px rgba(45,122,79,0.5);
-}
-
-/* ── CORNER ACCENTS ── */
-.corner {
-  position: absolute;
-  width: 12px; height: 12px;
-}
-
-.corner.tl { top: 8px; left: 8px; border-top: 2px solid #ccc; border-left: 2px solid #ccc; }
-.corner.tr { top: 8px; right: 8px; border-top: 2px solid #ccc; border-right: 2px solid #ccc; }
-.corner.bl { bottom: 8px; left: 8px; border-bottom: 2px solid #ccc; border-left: 2px solid #ccc; }
-.corner.br { bottom: 8px; right: 8px; border-bottom: 2px solid #ccc; border-right: 2px solid #ccc; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS HOME — Intelligence Lives Here</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Outfit', sans-serif; background-color: #fcfcfc; color: #000; overflow: hidden; }
+        
+        /* Premium Glassmorphism */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover { border-color: rgba(0, 0, 0, 0.1); transform: translateY(-2px); box-shadow: 0 12px 30px -10px rgba(0,0,0,0.08); }
+
+        /* Glowing Effects */
+        .glow-cyan { filter: drop-shadow(0 0 8px rgba(34, 211, 238, 0.6)); }
+        .bg-glow-cyan { box-shadow: 0 0 15px rgba(34, 211, 238, 0.4); }
+        
+        /* Floorplan Interaction */
+        .room-path { transition: all 0.5s ease; fill: #f3f4f6; stroke: #e5e7eb; stroke-width: 1; cursor: pointer; }
+        .room-path.light-on { fill: rgba(34, 211, 238, 0.15); stroke: #22d3ee; stroke-width: 2; }
+        .room-path:hover { fill: #f9fafb; }
+
+        /* Energy Gauge */
+        .gauge-path { transition: stroke-dashoffset 0.8s ease-in-out; }
+
+        /* Skeleton Animation */
+        @keyframes shimmer { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+        .skeleton { animation: shimmer 1.5s infinite; background: #f3f4f6; border-radius: 8px; }
+
+        /* Door Animation */
+        .door-icon { transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); transform-origin: left; }
+        .door-open { transform: perspective(500px) rotateY(-50deg); }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
+        
+        .active-tab { background: #000; color: #fff; }
+        .section-content { display: none; }
+        .section-content.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
 </head>
-<body>
+<body class="h-screen flex flex-col">
 
-<!-- ════ SIDEBAR ════ -->
-<aside class="sidebar">
-  <div class="logo">
-    <div class="logo-icon">🏢</div>
-    <div class="logo-text">Smart<span>Hub</span></div>
-  </div>
-
-  <div class="nav-label">Main Menu</div>
-
-  <nav>
-    <div class="nav-item active">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-        <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
-      </svg>
-      Dashboard
-      <span class="nav-badge">3</span>
+    <!-- ── LOADING OVERLAY ── -->
+    <div id="loader" class="fixed inset-0 z-[100] bg-white flex items-center justify-center transition-opacity duration-700">
+        <div class="flex flex-col items-center">
+            <div class="w-12 h-12 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
+            <p class="mt-4 font-bold tracking-widest text-sm uppercase">Nexus Home</p>
+        </div>
     </div>
 
+    <!-- ── TOP NAVBAR ── -->
+    <nav class="h-16 glass-card border-b flex items-center justify-between px-6 z-50">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
+                <div class="w-2 h-2 bg-cyan-400 rounded-full animate-pulse shadow-[0_0_8px_#22d3ee]"></div>
+            </div>
+            <h1 class="font-extrabold text-lg tracking-tight uppercase">Nexus <span class="font-light">Home</span></h1>
+        </div>
 
-    <div class="nav-item">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-      </svg>
-      Analytics
+        <div class="hidden md:flex items-center gap-8 text-sm font-medium">
+            <div id="live-clock" class="font-mono bg-slate-100 px-3 py-1 rounded-full text-[12px]">12:00:00 PM</div>
+            <div class="flex items-center gap-4">
+                <button onclick="toggleNotifications()" class="relative p-2 hover:bg-slate-100 rounded-full transition-colors">
+                    <i data-lucide="bell" class="w-5 h-5"></i>
+                    <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                </button>
+                <div class="flex items-center gap-3 border-l pl-4">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-xs font-bold leading-none">Arjun Kumar</p>
+                        <p class="text-[10px] text-slate-400 uppercase tracking-widest">Premium Resident</p>
+                    </div>
+                    <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-slate-200 to-slate-400 border border-slate-200 overflow-hidden">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Arjun" alt="avatar">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex flex-1 overflow-hidden">
+        <!-- ── SIDEBAR (DESKTOP) ── -->
+        <aside class="hidden lg:flex w-64 flex-col border-r bg-white p-4 gap-2">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-4 mb-2">Main Menu</p>
+            <button onclick="switchTab('dashboard')" class="nav-btn active-tab flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all">
+                <i data-lucide="layout-grid" class="w-5 h-5"></i> Dashboard
+            </button>
+            <button onclick="switchTab('lighting')" class="nav-btn flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-500 hover:bg-slate-50 transition-all">
+                <i data-lucide="lightbulb" class="w-5 h-5"></i> Lighting
+            </button>
+            <button onclick="switchTab('energy')" class="nav-btn flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-500 hover:bg-slate-50 transition-all">
+                <i data-lucide="zap" class="w-5 h-5"></i> Energy
+            </button>
+            <button onclick="switchTab('doors')" class="nav-btn flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-500 hover:bg-slate-50 transition-all">
+                <i data-lucide="door-closed" class="w-5 h-5"></i> Doors
+            </button>
+            <button onclick="switchTab('automation')" class="nav-btn flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-500 hover:bg-slate-50 transition-all">
+                <i data-lucide="cpu" class="w-5 h-5"></i> Automation
+            </button>
+            
+            <div class="mt-auto p-4 bg-slate-950 rounded-2xl text-white relative overflow-hidden">
+                <div class="relative z-10">
+                    <p class="text-[10px] text-slate-400 uppercase font-bold tracking-tighter">Security Status</p>
+                    <p class="text-sm font-bold mt-1">High Protection</p>
+                    <button class="mt-3 text-[10px] bg-white/20 px-3 py-1.5 rounded-lg hover:bg-white/30 transition-colors">Check Protocols</button>
+                </div>
+                <i data-lucide="shield-check" class="absolute -right-2 -bottom-2 w-16 h-16 text-white/10 rotate-12"></i>
+            </div>
+        </aside>
+
+        <!-- ── MAIN CONTENT AREA ── -->
+        <main class="flex-1 overflow-y-auto bg-[#fcfcfc] p-4 md:p-8 pb-24 md:pb-8">
+            
+            <!-- 1. DASHBOARD SECTION -->
+            <section id="dashboard" class="section-content active">
+                <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+                    <div>
+                        <h2 class="text-2xl font-extrabold tracking-tight">Welcome Home, Arjun</h2>
+                        <p class="text-slate-400 text-sm">System last synchronized 2 mins ago.</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="emergencyLock()" class="bg-red-50 text-red-600 border border-red-100 px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-red-600 hover:text-white transition-all">Emergency Lock</button>
+                        <button class="bg-black text-white px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider">Away Mode</button>
+                    </div>
+                </div>
+
+                <!-- Stat Cards -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    <div class="glass-card p-5 rounded-3xl">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-2 bg-cyan-50 text-cyan-600 rounded-xl"><i data-lucide="lightbulb" class="w-5 h-5"></i></div>
+                            <span class="text-[10px] font-bold text-green-500">+2 Active</span>
+                        </div>
+                        <p class="text-2xl font-bold" id="stat-lights">5 / 12</p>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Active Lights</p>
+                    </div>
+                    <div class="glass-card p-5 rounded-3xl">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-2 bg-amber-50 text-amber-600 rounded-xl"><i data-lucide="zap" class="w-5 h-5"></i></div>
+                            <span class="text-[10px] font-bold text-slate-400">Live Load</span>
+                        </div>
+                        <p class="text-2xl font-bold" id="stat-power">2.4 <span class="text-sm font-medium">kW</span></p>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Energy Consumption</p>
+                    </div>
+                    <div class="glass-card p-5 rounded-3xl">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-2 bg-indigo-50 text-indigo-600 rounded-xl"><i data-lucide="thermometer" class="w-5 h-5"></i></div>
+                        </div>
+                        <p class="text-2xl font-bold" id="stat-temp">24°C</p>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Average Temp</p>
+                    </div>
+                    <div class="glass-card p-5 rounded-3xl">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-2 bg-emerald-50 text-emerald-600 rounded-xl"><i data-lucide="lock" class="w-5 h-5"></i></div>
+                            <span class="text-[10px] font-bold text-emerald-600 uppercase">Secure</span>
+                        </div>
+                        <p class="text-2xl font-bold">1 / 4</p>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Doors Open</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- SVG Floor Plan -->
+                    <div class="lg:col-span-2 glass-card rounded-[40px] p-8 relative min-h-[400px] flex items-center justify-center">
+                        <div class="absolute top-6 left-8 flex items-center gap-2">
+                            <div class="w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
+                            <p class="text-[10px] font-bold uppercase tracking-widest">Live Map View</p>
+                        </div>
+                        
+                        <svg viewBox="0 0 800 500" class="w-full max-w-xl h-auto drop-shadow-2xl">
+                            <!-- Garage -->
+                            <path id="path-garage" class="room-path" d="M50,350 L250,350 L250,480 L50,480 Z" />
+                            <text x="110" y="425" class="text-[12px] font-bold pointer-events-none uppercase">Garage</text>
+                            
+                            <!-- Master Bedroom -->
+                            <path id="path-master" class="room-path" d="M50,50 L250,50 L250,250 L50,250 Z" />
+                            <text x="90" y="150" class="text-[12px] font-bold pointer-events-none uppercase">Master Bed</text>
+
+                            <!-- Hallway -->
+                            <path id="path-hallway" class="room-path" d="M250,150 L550,150 L550,250 L250,250 Z" />
+                            <text x="370" y="210" class="text-[10px] font-bold pointer-events-none uppercase text-slate-400">Hallway</text>
+
+                            <!-- Living Room -->
+                            <path id="path-living" class="room-path" d="M250,250 L550,250 L550,480 L250,480 Z" />
+                            <text x="350" y="380" class="text-[14px] font-extrabold pointer-events-none uppercase">Living Room</text>
+
+                            <!-- Kitchen -->
+                            <path id="path-kitchen" class="room-path" d="M550,250 L750,250 L750,480 L550,480 Z" />
+                            <text x="610" y="380" class="text-[12px] font-bold pointer-events-none uppercase">Kitchen</text>
+
+                            <!-- Office -->
+                            <path id="path-office" class="room-path" d="M550,50 L750,50 L750,250 L550,250 Z" />
+                            <text x="620" y="150" class="text-[12px] font-bold pointer-events-none uppercase">Office</text>
+                        </svg>
+                    </div>
+
+                    <!-- Feed -->
+                    <div class="glass-card rounded-[40px] p-6 flex flex-col h-[500px]">
+                        <p class="text-[10px] font-bold uppercase tracking-widest mb-4">Activity Timeline</p>
+                        <div id="activity-feed" class="flex-1 overflow-y-auto space-y-4 pr-2">
+                            <!-- Feed Item -->
+                            <div class="flex gap-4 p-3 hover:bg-white rounded-2xl transition-colors">
+                                <div class="w-8 h-8 rounded-full bg-cyan-50 flex items-center justify-center shrink-0">
+                                    <i data-lucide="lightbulb" class="w-4 h-4 text-cyan-600"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold">Living Room Light ON</p>
+                                    <p class="text-[10px] text-slate-400">Auto-triggered by motion · Just now</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. ENERGY MONITOR SECTION -->
+            <section id="energy" class="section-content">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Gauge -->
+                    <div class="glass-card rounded-[40px] p-8 flex flex-col items-center justify-center text-center">
+                        <p class="text-[10px] font-bold uppercase tracking-widest mb-8">Total Power Consumption</p>
+                        <div class="relative w-64 h-48">
+                            <svg viewBox="0 0 100 60" class="w-full">
+                                <path d="M 10 50 A 40 40 0 1 1 90 50" fill="none" stroke="#f1f5f9" stroke-width="8" stroke-linecap="round"/>
+                                <path id="energy-arc" d="M 10 50 A 40 40 0 1 1 90 50" fill="none" stroke="url(#energy-gradient)" stroke-width="8" stroke-linecap="round" stroke-dasharray="126" stroke-dashoffset="60" class="gauge-path"/>
+                                <defs>
+                                    <linearGradient id="energy-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" stop-color="#22d3ee" />
+                                        <stop offset="50%" stop-color="#f59e0b" />
+                                        <stop offset="100%" stop-color="#ef4444" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                            <div class="absolute inset-0 flex flex-col items-center justify-end pb-4">
+                                <span id="gauge-val" class="text-4xl font-black">2.4</span>
+                                <span class="text-xs font-bold text-slate-400 uppercase">Kilowatts</span>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 w-full mt-8">
+                            <div class="bg-slate-50 p-3 rounded-2xl">
+                                <p class="text-[10px] font-bold text-slate-400">Daily Cost</p>
+                                <p class="text-lg font-black">₹142.50</p>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded-2xl">
+                                <p class="text-[10px] font-bold text-slate-400">Today's Peak</p>
+                                <p class="text-lg font-black">4.8 kW</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts -->
+                    <div class="lg:col-span-2 glass-card rounded-[40px] p-8 h-[400px]">
+                        <div class="flex justify-between mb-4">
+                            <p class="text-[10px] font-bold uppercase tracking-widest">24h Usage Pattern</p>
+                            <div class="flex gap-4 text-[10px] font-bold">
+                                <span class="flex items-center gap-1"><span class="w-2 h-2 bg-cyan-400 rounded-full"></span> Lights</span>
+                                <span class="flex items-center gap-1"><span class="w-2 h-2 bg-slate-900 rounded-full"></span> Appliances</span>
+                            </div>
+                        </div>
+                        <canvas id="energyChart" class="w-full h-full"></canvas>
+                    </div>
+
+                    <!-- Appliances -->
+                    <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <!-- Refrigerator -->
+                        <div class="glass-card p-6 rounded-3xl flex items-center justify-between border-l-4 border-l-cyan-400">
+                            <div class="flex items-center gap-4">
+                                <div class="p-3 bg-slate-100 rounded-2xl"><i data-lucide="refrigerator" class="w-6 h-6"></i></div>
+                                <div>
+                                    <p class="text-sm font-bold">Refrigerator</p>
+                                    <p class="text-xs text-slate-400">Always ON · 150W</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm font-bold">₹28.4</p>
+                                <p class="text-[10px] text-slate-400 uppercase">Today</p>
+                            </div>
+                        </div>
+                        <!-- AC -->
+                        <div class="glass-card p-6 rounded-3xl flex items-center justify-between border-l-4 border-l-amber-400">
+                            <div class="flex items-center gap-4">
+                                <div class="p-3 bg-slate-100 rounded-2xl"><i data-lucide="air-vent" class="w-6 h-6"></i></div>
+                                <div>
+                                    <p class="text-sm font-bold">Air Conditioner</p>
+                                    <p class="text-xs text-slate-400">Setting 24°C · 1.8kW</p>
+                                </div>
+                            </div>
+                            <div class="toggle-sw">
+                                <div class="w-10 h-5 bg-black rounded-full p-1 cursor-pointer">
+                                    <div class="w-3 h-3 bg-white rounded-full translate-x-5"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. LIGHTING SECTION -->
+            <section id="lighting" class="section-content">
+                <div class="flex items-center justify-between mb-8">
+                    <p class="text-[10px] font-bold uppercase tracking-widest">Environment Control</p>
+                    <div class="flex gap-2">
+                        <button class="bg-slate-100 text-[10px] font-bold px-4 py-2 rounded-xl uppercase">All OFF</button>
+                        <button class="bg-black text-white text-[10px] font-bold px-4 py-2 rounded-xl uppercase tracking-widest">Sync Auto</button>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="lights-grid">
+                    <!-- Room Card -->
+                    <div class="glass-card rounded-[32px] p-6" data-room="living">
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="flex items-center gap-3">
+                                <div class="room-icon w-12 h-12 bg-cyan-50 text-cyan-600 rounded-2xl flex items-center justify-center shadow-[0_0_15px_rgba(34,211,238,0.2)]">
+                                    <i data-lucide="sofa" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-sm">Living Room</p>
+                                    <p class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">3 Lights Connected</p>
+                                </div>
+                            </div>
+                            <button onclick="toggleLight('living')" class="light-toggle w-12 h-6 bg-slate-200 rounded-full p-1 transition-colors relative">
+                                <div class="dot w-4 h-4 bg-white rounded-full transition-transform"></div>
+                            </button>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center text-[10px] font-black uppercase tracking-tighter text-slate-400">
+                                <span>Brightness</span>
+                                <span class="brightness-val">80%</span>
+                            </div>
+                            <input type="range" class="w-full accent-black h-1 bg-slate-100 rounded-full appearance-none cursor-pointer">
+                            <div class="flex items-center justify-between p-3 bg-slate-50 rounded-2xl">
+                                <div class="flex items-center gap-2">
+                                    <i data-lucide="eye" class="w-3 h-3 text-slate-400"></i>
+                                    <span class="text-[10px] font-bold uppercase tracking-widest">Auto Mode</span>
+                                </div>
+                                <div class="w-6 h-3 bg-green-500 rounded-full"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Repeat for other rooms -->
+                </div>
+            </section>
+
+            <!-- 4. DOORS SECTION -->
+            <section id="doors" class="section-content">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="glass-card rounded-[32px] p-6 text-center">
+                        <div class="w-20 h-28 border-2 border-dashed border-slate-200 rounded-xl mx-auto mb-6 flex items-center justify-center bg-slate-50/50">
+                            <i data-lucide="door-closed" class="w-12 h-12 text-slate-900 door-icon" id="door-main-icon"></i>
+                        </div>
+                        <p class="font-bold">Main Entrance</p>
+                        <p class="text-[10px] text-slate-400 uppercase font-bold tracking-widest mb-6">Locked Since 08:45 AM</p>
+                        <div class="flex gap-2">
+                            <button onclick="toggleDoor('main')" class="flex-1 bg-black text-white py-3 rounded-xl text-xs font-bold uppercase">Unlock</button>
+                            <button class="w-12 flex items-center justify-center bg-slate-100 rounded-xl"><i data-lucide="history" class="w-4 h-4"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
     </div>
 
-    <div class="nav-item">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="3"/>
-        <path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M12 2v2M12 20v2M20 12h2M2 12h2M19.07 19.07l-1.41-1.41M4.93 19.07l1.41-1.41"/>
-      </svg>
-      Settings
+    <!-- ── BOTTOM STATUS BAR ── -->
+    <footer class="h-10 glass-card border-t fixed bottom-0 left-0 right-0 z-[60] px-6 flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-slate-400">
+        <div class="flex items-center gap-6">
+            <div class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                Server: Online
+            </div>
+            <div class="hidden sm:block">Sync: Stable (0.4ms)</div>
+        </div>
+        <div class="flex items-center gap-4">
+            <span class="bg-black text-white px-2 py-0.5 rounded text-[8px]">v4.2.0-PRO</span>
+            <span>Chennai, TN · 32°C</span>
+        </div>
+    </footer>
+
+    <!-- ── MOBILE BOTTOM NAV ── -->
+    <div class="lg:hidden fixed bottom-10 left-0 right-0 h-16 bg-white border-t flex items-center justify-around z-50">
+        <button onclick="switchTab('dashboard')" class="flex flex-col items-center text-black">
+            <i data-lucide="layout-grid" class="w-5 h-5"></i>
+            <span class="text-[8px] mt-1 uppercase">Home</span>
+        </button>
+        <button onclick="switchTab('lighting')" class="flex flex-col items-center text-slate-400">
+            <i data-lucide="lightbulb" class="w-5 h-5"></i>
+            <span class="text-[8px] mt-1 uppercase">Lights</span>
+        </button>
+        <button onclick="switchTab('energy')" class="flex flex-col items-center text-slate-400">
+            <i data-lucide="zap" class="w-5 h-5"></i>
+            <span class="text-[8px] mt-1 uppercase">Energy</span>
+        </button>
+        <button onclick="switchTab('doors')" class="flex flex-col items-center text-slate-400">
+            <i data-lucide="shield" class="w-5 h-5"></i>
+            <span class="text-[8px] mt-1 uppercase">Security</span>
+        </button>
     </div>
 
-    <div class="nav-item">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M18 20V10M12 20V4M6 20v-6"/>
-      </svg>
-      Reports
-    </div>
-  </nav>
+    <script>
+        // Initializing Lucide Icons
+        lucide.createIcons();
 
-  <div class="sidebar-footer">
-    <div class="user-card">
-      <div class="avatar">D</div>
-      <div class="user-info">
-        <div class="name">Dharani</div>
-        <div class="role">Administrator</div>
-      </div>
-    </div>
-  </div>
-</aside>
+        const homeState = {
+            lights: {
+                living: { on: true, brightness: 80, auto: true },
+                kitchen: { on: false, brightness: 50, auto: true },
+                master: { on: true, brightness: 30, auto: false },
+                office: { on: false, brightness: 100, auto: true },
+                garage: { on: false, brightness: 100, auto: false }
+            },
+            doors: { main: 'locked', back: 'locked', garage: 'closed' },
+            power: 2.45
+        };
 
-<!-- ════ MAIN ════ -->
-<div class="main">
+        // ── SIMULATION ENGINE ──
 
-  <!-- TOP BAR -->
-  <header class="topbar">
-    <div class="topbar-left">
-      <h1>Building Dashboard</h1>
-      <p>Smart Classroom Control System · Floor 1</p>
-    </div>
-    <div class="topbar-right">
-      <div class="stat-pill online">
-        <div class="pulse-dot"></div>
-        System Online
-      </div>
-      <div class="stat-pill devices">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>
-        9 Devices
-      </div>
-    </div>
-  </header>
+        function startSimulation() {
+            // Update Clock
+            setInterval(() => {
+                const now = new Date();
+                document.getElementById('live-clock').innerText = now.toLocaleTimeString();
+            }, 1000);
 
-  <!-- CONTENT -->
-  <div class="content">
+            // Fluctuating Power
+            setInterval(() => {
+                homeState.power = Math.max(1.2, homeState.power + (Math.random() - 0.5) * 0.1);
+                updateEnergyUI();
+            }, 3000);
 
-    <div class="section-header">
-      <div class="section-tag">Classrooms</div>
-      <h2>Room Control Grid</h2>
-      <div class="line"></div>
-    </div>
+            // Random Motion Trigger
+            setInterval(() => {
+                const rooms = Object.keys(homeState.lights);
+                const randomRoom = rooms[Math.floor(Math.random() * rooms.length)];
+                if (homeState.lights[randomRoom].auto && !homeState.lights[randomRoom].on) {
+                    toggleLight(randomRoom, true);
+                    pushActivity(`Motion detected in ${randomRoom}`, 'eye');
+                }
+            }, 12000);
+        }
 
-    <div class="rooms-grid">
+        function updateEnergyUI() {
+            const powerVal = homeState.power.toFixed(2);
+            document.getElementById('stat-power').innerHTML = `${powerVal} <span class="text-sm font-medium">kW</span>`;
+            document.getElementById('gauge-val').innerText = powerVal;
+            
+            // Update Arc (dash-offset 126 is 0%, 0 is 100%)
+            const percent = Math.min((powerVal / 5) * 126, 126);
+            document.getElementById('energy-arc').style.strokeDashoffset = 126 - percent;
+        }
 
-      <!-- ── CLASS 1 ── -->
-      <div class="room-card" id="room1">
-        <div class="corner tl"></div><div class="corner tr"></div>
-        <div class="corner bl"></div><div class="corner br"></div>
+        function toggleLight(room, forced = false) {
+            const state = forced !== false ? forced : !homeState.lights[room].on;
+            homeState.lights[room].on = state;
+            
+            // Update Floorplan
+            const path = document.getElementById(`path-${room}`);
+            if (path) {
+                state ? path.classList.add('light-on') : path.classList.remove('light-on');
+            }
 
-        <div class="room-bar"><div class="room-bar-fill" id="bar1" style="width:0%"></div></div>
+            // Update UI Button
+            const card = document.querySelector(`[data-room="${room}"]`);
+            if (card) {
+                const btn = card.querySelector('.light-toggle');
+                const dot = btn.querySelector('.dot');
+                if (state) {
+                    btn.classList.replace('bg-slate-200', 'bg-black');
+                    dot.classList.add('translate-x-6');
+                } else {
+                    btn.classList.replace('bg-black', 'bg-slate-200');
+                    dot.classList.remove('translate-x-6');
+                }
+            }
+            
+            updateStats();
+        }
 
-        <div class="room-header">
-          <div>
-            <div class="room-id">Room · 101</div>
-            <div class="room-name">Class 1</div>
-          </div>
-          <div class="room-icon-bg">🏫</div>
-        </div>
+        function toggleDoor(door) {
+            const icon = document.getElementById(`door-${door}-icon`);
+            icon.classList.toggle('door-open');
+            const isOpened = icon.classList.contains('door-open');
+            pushActivity(`${door.toUpperCase()} Door ${isOpened ? 'Unlocked' : 'Locked'}`, isOpened ? 'unlock' : 'lock');
+        }
 
-        <div class="devices">
-          <!-- Fan -->
-          <div class="device-row d-fan" data-type="fan" id="r1-fan-row">
-            <div class="device-icon-wrap">🌀</div>
-            <div class="device-info">
-              <div class="device-name">Ceiling Fan</div>
-              <div class="device-state">Standby</div>
-            </div>
-            <div class="toggle-wrap">
-              <label class="toggle-sw">
-                <input type="checkbox" onchange="toggle(this,'r1-fan-row','Spinning','Standby')">
-                <span class="slider"></span>
-              </label>
-            </div>
-          </div>
+        function pushActivity(msg, icon) {
+            const feed = document.getElementById('activity-feed');
+            const item = document.createElement('div');
+            item.className = 'flex gap-4 p-3 hover:bg-white rounded-2xl transition-colors animate-[fadeIn_0.5s_ease]';
+            item.innerHTML = `
+                <div class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center shrink-0">
+                    <i data-lucide="${icon}" class="w-4 h-4 text-slate-900"></i>
+                </div>
+                <div>
+                    <p class="text-xs font-bold">${msg}</p>
+                    <p class="text-[10px] text-slate-400">Just now</p>
+                </div>
+            `;
+            feed.prepend(item);
+            lucide.createIcons();
+            if (feed.children.length > 10) feed.lastChild.remove();
+        }
 
-          <!-- Light -->
-          <div class="device-row d-light" data-type="light" id="r1-light-row">
-            <div class="device-icon-wrap">💡</div>
-            <div class="device-info">
-              <div class="device-name">LED Light</div>
-              <div class="device-state">OFF</div>
-            </div>
-            <div class="toggle-wrap">
-              <label class="toggle-sw">
-                <input type="checkbox" onchange="toggle(this,'r1-light-row','ON','OFF')">
-                <span class="slider"></span>
-              </label>
-            </div>
-          </div>
+        function updateStats() {
+            const activeLights = Object.values(homeState.lights).filter(l => l.on).length;
+            document.getElementById('stat-lights').innerText = `${activeLights} / 12`;
+        }
 
-          <!-- Door -->
-          <div class="device-row d-door" data-type="door" id="r1-door-row">
-            <div class="device-icon-wrap">🚪</div>
-            <div class="device-info">
-              <div class="device-name">Door Lock</div>
-              <div class="device-state">Locked</div>
-            </div>
-            <div class="toggle-wrap">
-              <label class="toggle-sw">
-                <input type="checkbox" onchange="toggle(this,'r1-door-row','Unlocked','Locked')">
-                <span class="slider"></span>
-              </label>
-            </div>
-          </div>
-        </div>
+        function switchTab(tabId) {
+            document.querySelectorAll('.section-content').forEach(s => s.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            
+            document.querySelectorAll('.nav-btn').forEach(b => {
+                b.classList.remove('active-tab');
+                b.classList.add('text-slate-500');
+            });
+            
+            // For desktop/mobile buttons
+            event.currentTarget.classList.add('active-tab');
+            event.currentTarget.classList.remove('text-slate-500');
+        }
 
-        <div class="room-footer">
-          <div class="active-count">Active: <span id="r1-count">0</span>/3 devices</div>
-          <div class="room-status-dot"></div>
-        </div>
-      </div>
+        // Initialize Charts
+        function initChart() {
+            const ctx = document.getElementById('energyChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['12am', '4am', '8am', '12pm', '4pm', '8pm', '11pm'],
+                    datasets: [{
+                        label: 'Power kW',
+                        data: [1.2, 0.8, 3.5, 2.4, 2.8, 4.2, 2.1],
+                        borderColor: '#000',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true,
+                        backgroundColor: 'rgba(0,0,0,0.02)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { display: false }, x: { grid: { display: false } } }
+                }
+            });
+        }
 
-      <!-- ── CLASS 2 ── -->
-      <div class="room-card" id="room2">
-        <div class="corner tl"></div><div class="corner tr"></div>
-        <div class="corner bl"></div><div class="corner br"></div>
+        // Boot
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loader').classList.add('opacity-0');
+                setTimeout(() => document.getElementById('loader').remove(), 700);
+                startSimulation();
+                initChart();
+                updateStats();
+            }, 1500);
+        });
 
-        <div class="room-bar"><div class="room-bar-fill" id="bar2" style="width:0%"></div></div>
-
-        <div class="room-header">
-          <div>
-            <div class="room-id">Room · 102</div>
-            <div class="room-name">Class 2</div>
-          </div>
-          <div class="room-icon-bg">🏫</div>
-        </div>
-
-        <div class="devices">
-          <div class="device-row d-fan" data-type="fan" id="r2-fan-row">
-            <div class="device-icon-wrap">🌀</div>
-            <div class="device-info">
-              <div class="device-name">Ceiling Fan</div>
-              <div class="device-state">Standby</div>
-            </div>
-            <div class="toggle-wrap">
-              <label class="toggle-sw">
-                <input type="checkbox" onchange="toggle(this,'r2-fan-row','Spinning','Standby')">
-                <span class="slider"></span>
-              </label>
-            </div>
-          </div>
-
-          <div class="device-row d-light" data-type="light" id="r2-light-row">
-            <div class="device-icon-wrap">💡</div>
-            <div class="device-info">
-              <div class="device-name">LED Light</div>
-              <div class="device-state">OFF</div>
-            </div>
-            <div class="toggle-wrap">
-              <label class="toggle-sw">
-                <input type="checkbox" onchange="toggle(this,'r2-light-row','ON','OFF')">
-                <span class="slider"></span>
-              </label>
-            </div>
-          </div>
-
-          <div class="device-row d-door" data-type="door" id="r2-door-row">
-            <div class="device-icon-wrap">🚪</div>
-            <div class="device-info">
-              <div class="device-name">Door Lock</div>
-              <div class="device-state">Locked</div>
-            </div>
-            <div class="toggle-wrap">
-              <label class="toggle-sw">
-                <input type="checkbox" onchange="toggle(this,'r2-door-row','Unlocked','Locked')">
-                <span class="slider"></span>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <div class="room-footer">
-          <div class="active-count">Active: <span id="r2-count">0</span>/3 devices</div>
-          <div class="room-status-dot"></div>
-        </div>
-      </div>
-
-      <!-- ── CLASS 3 ── -->
-      <div class="room-card" id="room3">
-        <div class="corner tl"></div><div class="corner tr"></div>
-        <div class="corner bl"></div><div class="corner br"></div>
-
-        <div class="room-bar"><div class="room-bar-fill" id="bar3" style="width:0%"></div></div>
-
-        <div class="room-header">
-          <div>
-            <div class="room-id">Room · 103</div>
-            <div class="room-name">Class 3</div>
-          </div>
-          <div class="room-icon-bg">🏫</div>
-        </div>
-
-        <div class="devices">
-          <div class="device-row d-fan" data-type="fan" id="r3-fan-row">
-            <div class="device-icon-wrap">🌀</div>
-            <div class="device-info">
-              <div class="device-name">Ceiling Fan</div>
-              <div class="device-state">Standby</div>
-            </div>
-            <div class="toggle-wrap">
-              <label class="toggle-sw">
-                <input type="checkbox" onchange="toggle(this,'r3-fan-row','Spinning','Standby')">
-                <span class="slider"></span>
-              </label>
-            </div>
-          </div>
-
-          <div class="device-row d-light" data-type="light" id="r3-light-row">
-            <div class="device-icon-wrap">💡</div>
-            <div class="device-info">
-              <div class="device-name">LED Light</div>
-              <div class="device-state">OFF</div>
-            </div>
-            <div class="toggle-wrap">
-              <label class="toggle-sw">
-                <input type="checkbox" onchange="toggle(this,'r3-light-row','ON','OFF')">
-                <span class="slider"></span>
-              </label>
-            </div>
-          </div>
-
-          <div class="device-row d-door" data-type="door" id="r3-door-row">
-            <div class="device-icon-wrap">🚪</div>
-            <div class="device-info">
-              <div class="device-name">Door Lock</div>
-              <div class="device-state">Locked</div>
-            </div>
-            <div class="toggle-wrap">
-              <label class="toggle-sw">
-                <input type="checkbox" onchange="toggle(this,'r3-door-row','Unlocked','Locked')">
-                <span class="slider"></span>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <div class="room-footer">
-          <div class="active-count">Active: <span id="r3-count">0</span>/3 devices</div>
-          <div class="room-status-dot"></div>
-        </div>
-      </div>
-
-    </div><!-- /rooms-grid -->
-  </div><!-- /content -->
-</div><!-- /main -->
-
-<script>
-  function toggle(checkbox, rowId, onText, offText) {
-    const row = document.getElementById(rowId);
-    const stateEl = row.querySelector('.device-state');
-
-    if (checkbox.checked) {
-      row.classList.add('on');
-      stateEl.textContent = onText;
-    } else {
-      row.classList.remove('on');
-      stateEl.textContent = offText;
-    }
-
-    updateRoom(rowId);
-  }
-
-  function updateRoom(rowId) {
-    // Determine which room this belongs to
-    const prefix = rowId.substring(0, 2); // "r1", "r2", "r3"
-    const roomNum = prefix[1];
-    const roomEl = document.getElementById('room' + roomNum);
-    const allRows = roomEl.querySelectorAll('.device-row');
-    let activeCount = 0;
-    allRows.forEach(r => { if (r.classList.contains('on')) activeCount++; });
-
-    document.getElementById(prefix + '-count').textContent = activeCount;
-    const pct = (activeCount / 3) * 100;
-    document.getElementById('bar' + roomNum).style.width = pct + '%';
-  }
-
-  // Sidebar nav click
-  document.querySelectorAll('.nav-item').forEach(item => {
-    item.addEventListener('click', () => {
-      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-      item.classList.add('active');
-    });
-  });
-</script>
+    </script>
 </body>
 </html>
